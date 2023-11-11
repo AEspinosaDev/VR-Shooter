@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using TMPro;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(XRGrabInteractable))]
@@ -24,12 +26,20 @@ public class PistolBehaviour : MonoBehaviour
     [SerializeField] private AudioClip shootingSound; // Assign this in the inspector
     [SerializeField] private float soundLifetime = 1.0f;
 
+
+    int max_ammo = 10;
+    int current_ammo = 0;
+    [SerializeField] private AudioClip reload_sound;
+    [SerializeField] private AudioClip no_ammo_sound;
+    [SerializeField] private TextMeshPro ammo_text;
+
     protected virtual void Awake()
     {
         interactableWeapon = GetComponent<XRGrabInteractable>();
         rigidbody = GetComponent<Rigidbody>();
         lineRenderer = GetComponent<LineRenderer>();
-        SetupInteractableWeaponEvents();
+        current_ammo = max_ammo;
+        ammo_text.text = current_ammo.ToString();
     }
 
     private void Update()
@@ -45,69 +55,55 @@ public class PistolBehaviour : MonoBehaviour
         else {
             lineRenderer.enabled = false;
         }
-    }
 
-    private void SetupInteractableWeaponEvents()
-    {
-        interactableWeapon.onSelectEntered.AddListener(PickUpWeapon);
-        interactableWeapon.onSelectExited.AddListener(DropWeapon);
-        interactableWeapon.onActivate.AddListener(StartShooting);
-        interactableWeapon.onDeactivate.AddListener(StopShooting);
-    }
 
-    private void PickUpWeapon(XRBaseInteractor interactor)
-    {
-        Debug.Log("Weapon picked");
-    }
-
-    private void DropWeapon(XRBaseInteractor arg0)
-    {
-        Debug.Log("Weapon dropped");
-    }
-
-    private void StartShooting(XRBaseInteractor arg0)
-    {
-        Shoot();
-    }
-
-    private void StopShooting(XRBaseInteractor arg0)
-    {
-        
+        // Reload
+        if (Vector3.Angle(transform.up, Vector3.up) > 100 && current_ammo < max_ammo) Reload();
     }
 
     public void Shoot()
     {
-        ApplyRecoil();
-        lineRenderer.enabled = true;
 
-        RaycastHit hit;
-        Vector3 start = dazzle.position;
-        Vector3 direction = transform.forward;
-        Vector3 end = start + direction * 10;
-
-        lineRenderer.SetPosition(0, start);
-        lineRenderer.SetPosition(1, end);
-
-        lineRenderer.startWidth = 0.1f;
-        lineRenderer.endWidth = 0.1f;
-        timer = lifetime;
-
-
-        if (Physics.Raycast(start, direction, out hit, Mathf.Infinity))
+        if (current_ammo > 0)
         {
-            if (hit.collider.tag == "enemy") { 
-                
-                Debug.Log("Hit enemy");
+            --current_ammo;
+
+            ApplyRecoil();
+            lineRenderer.enabled = true;
+
+            RaycastHit hit;
+            Vector3 start = dazzle.position;
+            Vector3 direction = transform.forward;
+            Vector3 end = start + direction * 10;
+
+            lineRenderer.SetPosition(0, start);
+            lineRenderer.SetPosition(1, end);
+
+            lineRenderer.startWidth = 0.1f;
+            lineRenderer.endWidth = 0.1f;
+            timer = lifetime;
+
+
+            if (Physics.Raycast(start, direction, out hit, Mathf.Infinity))
+            {
+                //Debug.DrawRay(start, direction * hit.distance, Color.yellow);
+
+                if (hit.collider.tag == "enemy")
+                {
+                    //Debug.Log("Hit enemy");
+                }
             }
-            Debug.DrawRay(start, direction * hit.distance, Color.yellow);
-        }
-        else
-        {
-            Debug.DrawRay(start, direction * 1000, Color.white);
-            Debug.Log("Did not Hit");
-        }
 
-        PlayShootingSound();
+            PlayShootingSound();
+
+
+            ammo_text.text = current_ammo.ToString();
+        }
+        else {
+            PlayEmpty();
+            lineRenderer.enabled = false;
+        }
+        
     }
 
     private void ApplyRecoil()
@@ -129,10 +125,39 @@ public class PistolBehaviour : MonoBehaviour
     private void PlayShootingSound()
     {
         GameObject audioObject = new GameObject("ShootingSound");
-        audioObject.transform.position = transform.position; // Set the position to the weapon's position
+        audioObject.transform.position = transform.position;
 
         AudioSource audioSource = audioObject.AddComponent<AudioSource>();
         audioSource.clip = shootingSound;
+        audioSource.playOnAwake = false;
+
+        audioSource.Play();
+
+        Destroy(audioObject, soundLifetime);
+    }
+
+    private void Reload() {
+        GameObject audioObject = new GameObject("ReloadingSound");
+        audioObject.transform.position = transform.position;
+
+        AudioSource audioSource = audioObject.AddComponent<AudioSource>();
+        audioSource.clip = reload_sound;
+        audioSource.playOnAwake = false;
+
+        audioSource.Play();
+
+        Destroy(audioObject, soundLifetime);
+
+        current_ammo = max_ammo;
+        ammo_text.text = current_ammo.ToString();
+    }
+
+    private void PlayEmpty() {
+        GameObject audioObject = new GameObject("EmptySound");
+        audioObject.transform.position = transform.position;
+
+        AudioSource audioSource = audioObject.AddComponent<AudioSource>();
+        audioSource.clip = no_ammo_sound;
         audioSource.playOnAwake = false;
 
         audioSource.Play();
