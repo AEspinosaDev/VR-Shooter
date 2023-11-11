@@ -33,6 +33,8 @@ public class PistolBehaviour : MonoBehaviour
     [SerializeField] private AudioClip no_ammo_sound;
     [SerializeField] private TextMeshPro ammo_text;
 
+    [SerializeField] private Light light;
+
     protected virtual void Awake()
     {
         interactableWeapon = GetComponent<XRGrabInteractable>();
@@ -98,6 +100,10 @@ public class PistolBehaviour : MonoBehaviour
 
 
             ammo_text.text = current_ammo.ToString();
+
+            light.enabled = true;
+
+            StartCoroutine(Wait());
         }
         else {
             PlayEmpty();
@@ -165,4 +171,12 @@ public class PistolBehaviour : MonoBehaviour
         Destroy(audioObject, soundLifetime);
     }
 
+
+    IEnumerator Wait()
+    {
+
+        yield return new WaitForSeconds(.03f);
+        light.enabled = false;
+
+    }
 }
