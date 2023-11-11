@@ -21,6 +21,9 @@ public class PistolBehaviour : MonoBehaviour
     private Rigidbody rigidbody;
     private XRGrabInteractable interactableWeapon;
 
+    [SerializeField] private AudioClip shootingSound; // Assign this in the inspector
+    [SerializeField] private float soundLifetime = 1.0f;
+
     protected virtual void Awake()
     {
         interactableWeapon = GetComponent<XRGrabInteractable>();
@@ -38,6 +41,9 @@ public class PistolBehaviour : MonoBehaviour
             lineRenderer.endWidth *= scaleDownFactor;
 
             timer -= Time.deltaTime;
+        }
+        else {
+            lineRenderer.enabled = false;
         }
     }
 
@@ -72,6 +78,7 @@ public class PistolBehaviour : MonoBehaviour
     public void Shoot()
     {
         ApplyRecoil();
+        lineRenderer.enabled = true;
 
         RaycastHit hit;
         Vector3 start = dazzle.position;
@@ -99,6 +106,8 @@ public class PistolBehaviour : MonoBehaviour
             Debug.DrawRay(start, direction * 1000, Color.white);
             Debug.Log("Did not Hit");
         }
+
+        PlayShootingSound();
     }
 
     private void ApplyRecoil()
@@ -115,4 +124,20 @@ public class PistolBehaviour : MonoBehaviour
     {
         return damage;
     }
+
+
+    private void PlayShootingSound()
+    {
+        GameObject audioObject = new GameObject("ShootingSound");
+        audioObject.transform.position = transform.position; // Set the position to the weapon's position
+
+        AudioSource audioSource = audioObject.AddComponent<AudioSource>();
+        audioSource.clip = shootingSound;
+        audioSource.playOnAwake = false;
+
+        audioSource.Play();
+
+        Destroy(audioObject, soundLifetime);
+    }
+
 }
