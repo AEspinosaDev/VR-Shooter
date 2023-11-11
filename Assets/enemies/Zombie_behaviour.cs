@@ -14,7 +14,7 @@ public class Zombie_behaviour : MonoBehaviour
     EnemieManager _manager;
     float _speed;
     int _life;
-
+    List<Material> _materials = new List<Material>();
 
 
     private void Awake()
@@ -25,14 +25,20 @@ public class Zombie_behaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         int t = Random.Range(0, 2);
         _animator.SetFloat("Walk_Type", t);
         SetConfig(1);
+        foreach (var m in _meshRenderer.materials)
+        {
+            _materials.Add(m);
+        }
 
     }
     private void OnEnable()
     {
         _agent.isStopped = false;
+        GetComponent<Collider>().enabled = true;
     }
 
     // Update is called once per frame
@@ -67,6 +73,7 @@ public class Zombie_behaviour : MonoBehaviour
     IEnumerator Die()
     {
         _agent.isStopped = true;
+        GetComponent<Collider>().enabled = false;
         int t = Random.Range(0, 2);
         _animator.SetFloat("Die_Type", t);
         _animator.SetTrigger("Die");
@@ -77,10 +84,16 @@ public class Zombie_behaviour : MonoBehaviour
     }
     IEnumerator ColorizeDamage()
     {
-        var c = _meshRenderer.material;
-        _meshRenderer.material = _dmgMaterial;
+
+        for (int i = 0; i < _meshRenderer.materials.Length; i++)
+        {
+            _meshRenderer.materials[i] = _dmgMaterial;
+        }
         yield return new WaitForSeconds(.1f);
-        _meshRenderer.material = c;
+        for (int i = 0; i < _meshRenderer.materials.Length; i++)
+        {
+            _meshRenderer.materials[i] = _materials[i];
+        }
     }
     public void SetConfig(int conf)
     {
