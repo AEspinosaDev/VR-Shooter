@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using TMPro;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(XRGrabInteractable))]
@@ -93,6 +94,7 @@ public class PistolBehaviour : MonoBehaviour
                 if (hit.collider.tag == "enemy")
                 {
                     //Debug.Log("Hit enemy");
+                    hit.collider.gameObject.GetComponent<Zombie_behaviour>().ReceiveDamage((int)damage);
                 }
             }
 

@@ -2973,6 +2973,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Browning HP
       objectReference: {fileID: 0}
+    - target: {fileID: 4973394389331508069, guid: 413673c9d341a2c48ad25767e43815ad, type: 3}
+      propertyPath: damage
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 7528129907904611807, guid: 413673c9d341a2c48ad25767e43815ad, type: 3}
       propertyPath: m_RootOrder
       value: 10
