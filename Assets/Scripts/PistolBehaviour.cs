@@ -11,6 +11,9 @@ using Unity.VisualScripting;
 [RequireComponent(typeof(LineRenderer))]
 public class PistolBehaviour : MonoBehaviour
 {
+    [SerializeField] private Player player;
+
+
     [SerializeField] protected float shootingForce;
     [SerializeField] private float recoilForce;
     [SerializeField] private float damage;
@@ -94,7 +97,8 @@ public class PistolBehaviour : MonoBehaviour
                 if (hit.collider.tag == "enemy")
                 {
                     //Debug.Log("Hit enemy");
-                    hit.collider.gameObject.GetComponent<Zombie_behaviour>().ReceiveDamage((int)damage);
+                    bool dead = hit.collider.gameObject.GetComponent<Zombie_behaviour>().ReceiveDamage((int)damage);
+                    if (dead) player.IncreaseKills();
                 }
             }
 

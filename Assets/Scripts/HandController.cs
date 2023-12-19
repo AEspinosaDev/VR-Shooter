@@ -10,6 +10,25 @@ public class MyHandController : MonoBehaviour
         actionTrigger.action.performed += TriggerPress;
         actionGrip.action.performed += GripPress;
         handAnimator = GetComponent<Animator>();
+        //DontDestroyOnLoad(handAnimator);
+    }
+    private void Awake()
+    {
+        actionTrigger.action.performed += TriggerPress;
+        actionGrip.action.performed += GripPress;
+        handAnimator = GetComponent<Animator>();
+    }
+    private void OnEnable()
+    {
+        actionTrigger.action.performed += TriggerPress;
+        actionGrip.action.performed += GripPress;
+        handAnimator = GetComponent<Animator>();
+    }
+    private void OnDisable()
+    {
+        actionTrigger.action.performed -= TriggerPress;
+        actionGrip.action.performed -= GripPress;
+        //handAnimator = GetComponent<Animator>();
     }
     private void GripPress(InputAction.CallbackContext obj)
     {

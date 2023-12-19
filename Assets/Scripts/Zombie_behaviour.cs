@@ -14,12 +14,14 @@ public class Zombie_behaviour : MonoBehaviour
     EnemieManager _manager;
     float _speed;
     int _life;
+    [SerializeField] int _damage = 25;
+
     List<Material> _materials = new List<Material>();
 
 
     private void Awake()
     {
-        
+
         _animator = GetComponent<Animator>();
     }
     // Start is called before the first frame update
@@ -53,17 +55,19 @@ public class Zombie_behaviour : MonoBehaviour
     }
     public void SetManager(EnemieManager m)
     {
-        _manager = m;    
+        _manager = m;
     }
 
-    public void ReceiveDamage(int dmg)
+    public bool ReceiveDamage(int dmg)
     {
         _life -= dmg;
         StartCoroutine(ColorizeDamage());
         if (_life <= 0)
         {
             StartCoroutine(Die());
+            return true;
         }
+        return false;
     }
     public void SetLife(int l)
     {
@@ -112,5 +116,30 @@ public class Zombie_behaviour : MonoBehaviour
                 _agent.speed = 0.9f;
                 break;
         }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            StartCoroutine(Attack(collision.gameObject.GetComponent<Player>()));
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            StopCoroutine(Attack(collision.gameObject.GetComponent<Player>()));
+        }
+    }
+
+    IEnumerator Attack(Player player)
+    {
+        while (true)
+        {
+            player.DecreaseLife(_damage);
+            yield return new WaitForSeconds(2.0f);
+
+        }
+
     }
 }
