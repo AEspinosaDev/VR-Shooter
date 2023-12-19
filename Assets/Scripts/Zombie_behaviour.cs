@@ -8,6 +8,7 @@ public class Zombie_behaviour : MonoBehaviour
 {
     private Transform _playerTransform;
     private Animator _animator;
+    private ZombieSoundSystem _zombieSounds;
     [SerializeField] SkinnedMeshRenderer _meshRenderer;
     [SerializeField] NavMeshAgent _agent;
     [SerializeField] Material _dmgMaterial;
@@ -21,13 +22,12 @@ public class Zombie_behaviour : MonoBehaviour
 
     private void Awake()
     {
-
         _animator = GetComponent<Animator>();
+        _zombieSounds = GetComponent<ZombieSoundSystem>();
     }
     // Start is called before the first frame update
     void Start()
     {
-
         int t = Random.Range(0, 2);
         _animator.SetFloat("Walk_Type", t);
         SetConfig(1);
@@ -35,7 +35,6 @@ public class Zombie_behaviour : MonoBehaviour
         {
             _materials.Add(m);
         }
-
     }
     private void OnEnable()
     {
@@ -76,6 +75,7 @@ public class Zombie_behaviour : MonoBehaviour
 
     IEnumerator Die()
     {
+        _zombieSounds.PlayDyingClip();
         _agent.isStopped = true;
         GetComponent<Collider>().enabled = false;
         int t = Random.Range(0, 2);
@@ -136,6 +136,7 @@ public class Zombie_behaviour : MonoBehaviour
     {
         while (true)
         {
+            _zombieSounds.PlayHitClip();
             player.DecreaseLife(_damage);
             yield return new WaitForSeconds(2.0f);
 
