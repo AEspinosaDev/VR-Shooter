@@ -208,7 +208,7 @@ Transform:
   - {fileID: 3796409391182487297}
   - {fileID: 498481935104403376}
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &4251287773638689743
 BoxCollider:
@@ -446,6 +446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08cf3aecd8bee1f489667e9b141c106b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   shootingForce: 1
   recoilForce: 2
   damage: 10
@@ -1071,8 +1072,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.73378813, b: 0.23113209, a: 1}
-  m_Intensity: 1
-  m_Range: 5
+  m_Intensity: 2.5
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10

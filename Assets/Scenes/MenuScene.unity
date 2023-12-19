@@ -1740,7 +1740,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e23f48144d6e2a47a7c19ed393b9693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deadZombieCount: 0
 --- !u!4 &1606814978
 Transform:
   m_ObjectHideFlags: 0
@@ -3673,6 +3672,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 741145581731406212}
+    - target: {fileID: 4390675108410536423, guid: 9d2784069a8edd14580f84ec7b0094a0, type: 3}
+      propertyPath: m_text
+      value: 5 Nights at the
+      objectReference: {fileID: 0}
     - target: {fileID: 4490587118523505648, guid: 9d2784069a8edd14580f84ec7b0094a0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 

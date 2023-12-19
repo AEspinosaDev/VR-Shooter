@@ -48,6 +48,15 @@ public class PistolBehaviour : MonoBehaviour
         ammo_text.text = current_ammo.ToString();
     }
 
+    private void Start()
+    {
+        // Add Listener to vibrate when shoot
+        XRBaseInteractable interactable = GetComponent<XRBaseInteractable>();
+        interactable.activated.AddListener(ActivatePistol);
+
+        //lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+    }
+
     private void Update()
     {
         if (timer > 0)
@@ -184,5 +193,13 @@ public class PistolBehaviour : MonoBehaviour
         yield return new WaitForSeconds(.03f);
         light.enabled = false;
 
+    }
+
+    void ActivatePistol(BaseInteractionEventArgs args)
+    {
+        if (args.interactorObject is XRBaseControllerInteractor interactor)
+        {
+            interactor.SendHapticImpulse(1.0f, 0.5f);
+        }
     }
 }
